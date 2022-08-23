@@ -40,20 +40,19 @@
         <h2>Recommended</h2>
 
         <div class="recommended">
-
-          <div class="card">
+          <div  v-for="prod in inventory.slice(0,3 )" :key="prod.id " class="card">
             <div class="card-title">
-              Carrots
+              {{prod.name}}
             </div>
             <div class="card-body">
-              <i class="icofont-10x icofont-carrot"></i>
+              <i class="icofont-10x icofont-{{prod.icon}}"></i>
               <form>
                 <div class="row">
                   <div class="cell">
                     <label>Type:</label>
                   </div>
                   <div class="cell">
-                    <em>Vegetable</em>
+                    <em>{{prod.type}}</em>
                   </div>
                 </div>
                 <div class="row">
@@ -61,7 +60,7 @@
                     <label>Price:</label>
                   </div>
                   <div class="cell">
-                    $4.82
+                    ${{prod.price.USD}}
                   </div>
                 </div>
                 <div class="row">
@@ -69,94 +68,17 @@
                     <label>Quantity:</label>
                   </div>
                   <div class="cell">
-                    <input type="number" v-model.number="inventory.carrots">
+                    <input type="number" v-model.number="prod.quantity">
                   </div>
                 </div>
               </form>
             </div>
             <div class="card-footer">
-              <button @click="addToCart('carrots')" class="btn btn-light">
+              <button @click="addToCart(prod.name)" class="btn btn-light">
                 Add to cart
               </button>
             </div>
           </div>
-
-          <div class="card">
-            <div class="card-title">
-              Pineapples
-            </div>
-            <div class="card-body">
-              <i class="icofont-10x icofont-pineapple"></i>
-              <form>
-                <div class="row">
-                  <div class="cell">
-                    <label>Type:</label>
-                  </div>
-                  <div class="cell">
-                    <em>Fruit</em>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="cell">
-                    <label>Price:</label>
-                  </div>
-                  <div class="cell">
-                    $1.62
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="cell">
-                    <label>Quantity:</label>
-                  </div>
-                  <div class="cell">
-                    <input type="number" v-model="inventory.pineapples">
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div class="card-footer">
-              <button class="btn btn-light">Add to cart</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">
-              Cherries
-            </div>
-            <div class="card-body">
-              <i class="icofont-10x icofont-cherry"></i>
-              <form>
-                <div class="row">
-                  <div class="cell">
-                    <label>Type:</label>
-                  </div>
-                  <div class="cell">
-                    <em>Fruit</em>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="cell">
-                    <label>Price:</label>
-                  </div>
-                  <div class="cell">
-                    $1.04
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="cell">
-                    <label>Quantity:</label>
-                  </div>
-                  <div class="cell">
-                    <input type="number" v-model="inventory.cherries">
-                  </div>
-                </div>
-              </form>
-            </div>
-            <div class="card-footer">
-              <button class="btn btn-light">Add to cart</button>
-            </div>
-          </div>
-
         </div>
 
       </main>
@@ -175,11 +97,7 @@
       let app = Vue.createApp({
         data() {
           return {
-            inventory: {
-              carrots: 0,
-              pineapples: 0,
-              cherries: 0
-            },
+            inventory:[],
             cart: {
               carrots: 0,
               pineapples: 0,
@@ -189,13 +107,18 @@
           }
         },
         methods: {
-          addToCart(type){
-            this.cart[type] += this.inventory[type]
+          addToCart(name,index){
+            this.cart[name] += this.inventory[name]
             console.log(this.cart)
           },
           toggleSidebar(){
             this.showSidebar = !this.showSidebar
           }
+        },
+       async mounted(){
+        const res  = await fetch('./food.json');
+        const data = await res.json();
+        this.inventory = data;
         }
       });
       app.component('sidebar',{
